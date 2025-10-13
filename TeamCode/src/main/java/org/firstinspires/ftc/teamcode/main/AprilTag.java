@@ -74,14 +74,14 @@ public class AprilTag {
     }
 
     public void stopWebcam() {
-        if (visionPortal != null) {
-            visionPortal.stopStreaming(); // stops the camera stream
+        if (visionPortal != null && aprilTag != null) {
+            visionPortal.setProcessorEnabled(aprilTag, false);
         }
     }
 
     public void startWebcam() {
-        if (visionPortal != null) {
-            visionPortal.resumeStreaming(); // resumes the camera stream
+        if (visionPortal != null && aprilTag != null) {
+            visionPortal.setProcessorEnabled(aprilTag, true);
         }
     }
 }

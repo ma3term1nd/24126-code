@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     MecanumDrive drive = new MecanumDrive();
     AprilTag aprilTag = new AprilTag();
+    ColorSensor colorSensor = new ColorSensor();
 
     double strafe, forward, rotate;
     boolean lastButtonState = false;
@@ -19,6 +20,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     public void init() {
         drive.init(hardwareMap);
         //aprilTag.init(hardwareMap, true);
+        //colorSensor.init(hardwareMap);
         drive.imu.resetYaw();
         //belt1 = hardwareMap.get(DcMotor.class, "belt1");
         //belt2 = hardwareMap.get(DcMotor.class, "belt2");
@@ -35,6 +37,9 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         } else {
             telemetry.addLine("nothing detected");
         }*/
+
+        /* COLOR-SENSOR */
+
 
         /* SLOW-MODE */
         boolean curButtonState = gamepad1.left_bumper;

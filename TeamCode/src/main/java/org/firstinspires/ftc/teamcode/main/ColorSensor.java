@@ -20,6 +20,7 @@ public class ColorSensor extends OpenCvPipeline {
     private OpenCvWebcam webcam;
     private BallColor targetColor = BallColor.PURPLE; // default color to track
     private Point ballCenter = null; // stores last detected ball center
+    private boolean sensorEnabled = true; // toggle detection
 
     /* INIT CAMERA */
     public void init(HardwareMap hwMap) {
@@ -33,13 +34,21 @@ public class ColorSensor extends OpenCvPipeline {
 
         webcam.setPipeline(this);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override public void onOpened() {}
-            @Override public void onError(int errorCode) {}
+            @Override
+            public void onOpened() {}
+            @Override
+            public void onError(int errorCode) {}
         });
     }
 
     @Override
     public Mat processFrame(Mat input) {
+        if (!sensorEnabled) {
+            // If detection is disabled, skip processing
+            ballCenter = null;
+            return input;
+        }
+
         Mat hsv = new Mat();
         Mat mask = new Mat();
 
@@ -75,7 +84,6 @@ public class ColorSensor extends OpenCvPipeline {
             }
         }
 
-        // Return original image (optional)
         return input;
     }
 
@@ -90,10 +98,10 @@ public class ColorSensor extends OpenCvPipeline {
     }
 
     public void stopWebcam() {
-        if (webcam != null) webcam.stopStreaming();
+        sensorEnabled = false;
     }
 
     public void startWebcam() {
-        if (webcam != null) webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        sensorEnabled = true;
     }
 }
