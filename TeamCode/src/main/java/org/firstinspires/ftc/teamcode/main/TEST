@@ -1,0 +1,28 @@
+package org.firstinspires.ftc.teamcode.main;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp(name="TEST")
+public class TEST extends OpMode {
+    AprilTag april = new AprilTag();
+
+    public void init() {
+        april.init(hardwareMap);
+    }
+
+    public void loop() {
+        /* APRIL-TAG-SENSOR */
+        april.startWebcam();
+        april.visionPortal.resumeStreaming();
+
+        if (april.isAprilTag()) {
+            telemetry.addLine("ID: " + april.getID());
+            telemetry.addLine("Range: " + april.getRange());
+            telemetry.addLine("Height: " + april.getHeight());
+            telemetry.addLine("Angle: " + april.getAngle());
+        } else {
+            telemetry.addLine("nothing detected");
+        }
+    }
+}
