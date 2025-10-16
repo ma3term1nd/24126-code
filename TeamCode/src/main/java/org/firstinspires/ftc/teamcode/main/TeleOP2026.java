@@ -5,21 +5,28 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+
 @TeleOp(name="TeleOP2026")
 
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
-    MecanumDrive drive = new MecanumDrive();
-    AprilTag aprilTag = new AprilTag();
-    ColorSensor colorSensor = new ColorSensor();
+    private MecanumDrive drive = new MecanumDrive();
+    private VisionPortal camera;
+    private AprilTag aprilTag = new AprilTag();
+    private ColorSensor colorSensor = new ColorSensor();
 
-    double strafe, forward, rotate;
-    boolean lastButtonState = false;
-    ElapsedTime timer = new ElapsedTime(100);
-    DcMotor belt1, belt2, shooter;
+    private double strafe, forward, rotate;
+    private boolean lastButtonState = false;
+    private ElapsedTime timer = new ElapsedTime(100);
+    private DcMotor belt1, belt2, shooter;
 
     public void init() {
         drive.init(hardwareMap);
-        //aprilTag.init(hardwareMap, true);
+        camera = VisionPortal.easyCreateWithDefaults(
+                hardwareMap.get(WebcamName.class, "webcam"));
+        camera.resumeStreaming();
+        //aprilTag.init(hardwareMap);
         //colorSensor.init(hardwareMap);
         drive.imu.resetYaw();
         //belt1 = hardwareMap.get(DcMotor.class, "belt1");
