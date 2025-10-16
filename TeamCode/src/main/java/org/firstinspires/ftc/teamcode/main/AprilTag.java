@@ -28,7 +28,7 @@ public class AprilTag {
 
         visionPortal = VisionPortal.easyCreateWithDefaults(
                 hwMap.get(WebcamName.class, "webcam"), aprilTag);
-
+        visionPortal.resumeStreaming();
     }
 
     /* METHODS */
