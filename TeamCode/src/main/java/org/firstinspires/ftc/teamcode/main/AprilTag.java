@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class AprilTag {
 
-    private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
+    public AprilTagProcessor aprilTag;
+    public VisionPortal visionPortal;
 
     public void init(HardwareMap hwMap) {
         aprilTag = new AprilTagProcessor // sensor
@@ -25,9 +26,9 @@ public class AprilTag {
                 .setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
                 .build();
 
-        VisionPortal.Builder builder = new VisionPortal.Builder(); // camera
-        builder.addProcessor(aprilTag); // add the sensor
-        visionPortal = builder.build(); // build the VisionPortal
+        visionPortal = VisionPortal.easyCreateWithDefaults(
+                hwMap.get(WebcamName.class, "webcam"), aprilTag);
+
     }
 
     /* METHODS */
