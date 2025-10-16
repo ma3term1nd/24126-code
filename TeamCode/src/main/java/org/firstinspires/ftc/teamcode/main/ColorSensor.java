@@ -35,7 +35,8 @@ public class ColorSensor extends OpenCvPipeline {
         webcam.setPipeline(this);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened() {}
+            public void onOpened(
+            ) {webcam.openCameraDevice();webcam.startStreaming(320, 240);}
             @Override
             public void onError(int errorCode) {}
         });
