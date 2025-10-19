@@ -13,7 +13,7 @@ public class TEST extends OpMode {
 
     public void loop() {
         /* APRIL-TAG-SENSOR */
-        april.startWebcam();
+        //april.startWebcam();
         if (april.isAprilTag()) {
             telemetry.addLine("ID: " + april.getID());
             telemetry.addLine("Range: " + april.getRange());
@@ -22,5 +22,8 @@ public class TEST extends OpMode {
         } else {
             telemetry.addLine("nothing detected");
         }
+
+        /* COLOR-SENSOR */
+        
     }
 }
