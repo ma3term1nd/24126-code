@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.main;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -18,17 +15,14 @@ public class AprilTag {
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
 
-    public void init(HardwareMap hwMap) {
+    public AprilTagProcessor init() {
         aprilTag = new AprilTagProcessor // sensor
                 .Builder()
                 .setDrawTagOutline(true)
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
                 .build();
-
-        visionPortal = VisionPortal.easyCreateWithDefaults(
-                hwMap.get(WebcamName.class, "webcam"), aprilTag);
-        visionPortal.resumeStreaming();
+        return aprilTag;
     }
 
     /* METHODS */
@@ -70,17 +64,15 @@ public class AprilTag {
         return 0;
     }
 
-    public void setOffset(float i) {
-        aprilTag.setDecimation(i);
-    }
+    public void setOffset(float i) {aprilTag.setDecimation(i);}
 
-    public void stopWebcam() {
+    public void stopAprilTag(VisionPortal visionPortal) {
         if (visionPortal != null && aprilTag != null) {
             visionPortal.setProcessorEnabled(aprilTag, false);
         }
     }
 
-    public void startWebcam() {
+    public void startAprilTag(VisionPortal visionPortal) {
         if (visionPortal != null && aprilTag != null) {
             visionPortal.setProcessorEnabled(aprilTag, true);
         }
