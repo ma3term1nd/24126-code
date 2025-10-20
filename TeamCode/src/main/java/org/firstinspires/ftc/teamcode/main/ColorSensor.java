@@ -1,108 +1,70 @@
 package org.firstinspires.ftc.teamcode.main;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import android.graphics.Color;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.imgproc.Moments;
-import org.openftc.easyopencv.*;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.opencv.Circle;
+import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
+import org.firstinspires.ftc.vision.opencv.ColorRange;
+import org.firstinspires.ftc.vision.opencv.ImageRegion;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/* UTILITY CLASS */
+public class ColorSensor {
 
-public class ColorSensor extends OpenCvPipeline {
+    public ColorBlobLocatorProcessor colorLocator;
+    public VisionPortal visionPortal;
+    List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
 
-    public enum BallColor { PURPLE, GREEN }
-
-    private OpenCvWebcam webcam;
-    private BallColor targetColor = BallColor.PURPLE; // default color to track
-    private Point ballCenter = null; // stores last detected ball center
-    private boolean sensorEnabled = true; // toggle detection
-
-    /* INIT CAMERA */
-    public void init(HardwareMap hwMap) {
-        int cameraMonitorViewId = hwMap.appContext
-                .getResources()
-                .getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(
-                hwMap.get(WebcamName.class, "webcam"),
-                cameraMonitorViewId);
-
-        webcam.setPipeline(this);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened(
-            ) {webcam.openCameraDevice();webcam.startStreaming(320, 240);}
-            @Override
-            public void onError(int errorCode) {}
-        });
-    }
-
-    @Override
-    public Mat processFrame(Mat input) {
-        if (!sensorEnabled) {
-            // If detection is disabled, skip processing
-            ballCenter = null;
-            return input;
-        }
-
-        Mat hsv = new Mat();
-        Mat mask = new Mat();
-
-        // Convert RGB to HSV
-        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
-
-        // Create mask based on target color
-        if (targetColor == BallColor.PURPLE) {
-            Scalar lowerPurple = new Scalar(125, 50, 50);
-            Scalar upperPurple = new Scalar(155, 255, 255);
-            Core.inRange(hsv, lowerPurple, upperPurple, mask);
-        } else if (targetColor == BallColor.GREEN) {
-            Scalar lowerGreen = new Scalar(35, 50, 50);
-            Scalar upperGreen = new Scalar(85, 255, 255);
-            Core.inRange(hsv, lowerGreen, upperGreen, mask);
-        }
-
-        // Find contours
-        List<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(mask, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        // Reset center before searching
-        ballCenter = null;
-        double maxArea = 0;
-
-        // Find largest contour and its center
-        for (MatOfPoint contour : contours) {
-            double area = Imgproc.contourArea(contour);
-            if (area > 100 && area > maxArea) { // filter out noise, pick largest
-                Moments m = Imgproc.moments(contour);
-                ballCenter = new Point(m.m10 / m.m00, m.m01 / m.m00);
-                maxArea = area;
-            }
-        }
-
-        return input;
-    }
-
+    //circleFit.getX() circleFit.getY() circleFit.getRadius() getCircularity()
     /* METHODS */
 
-    public void setTargetColor(BallColor color) {
-        targetColor = color;
+    public ColorBlobLocatorProcessor setColorGreen() {
+        colorLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // default color
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                .setRoi(ImageRegion.entireFrame())
+                .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                .setBlurSize(5)          // Smooth the transitions between different colors in image
+                .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                .setErodeSize(15)        // Shrink blobs back to original size
+                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                .build();
+        return colorLocator;
     }
 
-    public Point getBallCenter() {
-        return ballCenter;
+    public ColorBlobLocatorProcessor setColorPurple() {
+        colorLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // default color
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                .setRoi(ImageRegion.entireFrame())
+                .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                .setBlurSize(5)          // Smooth the transitions between different colors in image
+                .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                .setErodeSize(15)        // Shrink blobs back to original size
+                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                .build();
+        return colorLocator;
     }
 
-    public void stopWebcam() {
-        sensorEnabled = false;
+    public double getX() {
+        for (ColorBlobLocatorProcessor.Blob b : blobs) {
+            Circle circleFit = b.getCircle();
+            return circleFit.getX();
+        } {return 0.0;}
     }
 
-    public void startWebcam() {
-        sensorEnabled = true;
+    public double getY() {
+        for (ColorBlobLocatorProcessor.Blob b : blobs) {
+            Circle circleFit = b.getCircle();
+            return circleFit.getY();
+        } {return 0.0;}
+    }
+
+    public double getRadius() {
+        for (ColorBlobLocatorProcessor.Blob b : blobs) {
+            Circle circleFit = b.getCircle();
+            return circleFit.getRadius();
+        } {return 0.0;}
     }
 }
