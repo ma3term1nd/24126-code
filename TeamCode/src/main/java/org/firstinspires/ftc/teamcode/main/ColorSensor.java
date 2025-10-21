@@ -12,40 +12,38 @@ import java.util.List;
 
 public class ColorSensor {
 
-    public ColorBlobLocatorProcessor colorLocator;
-    public VisionPortal visionPortal;
-    List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
+    private ColorBlobLocatorProcessor colorLocator;
+    private ColorRange color;
+    private List<ColorBlobLocatorProcessor.Blob> blobs;
 
-    //circleFit.getX() circleFit.getY() circleFit.getRadius() getCircularity()
+    public ColorSensor(ColorBlobLocatorProcessor colorLocator, String color) {
+        if (color.equals("purple")) {
+            colorLocator = new ColorBlobLocatorProcessor.Builder()
+                    .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // color chosen
+                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                    .setRoi(ImageRegion.entireFrame())
+                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                    .setBlurSize(5)          // Smooth the transitions between different colors in image
+                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                    .setErodeSize(15)        // Shrink blobs back to original size
+                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                    .build();
+        } else if (color.equals("green")) {
+            colorLocator = new ColorBlobLocatorProcessor.Builder()
+                    .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // color chosen
+                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                    .setRoi(ImageRegion.entireFrame())
+                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                    .setBlurSize(5)          // Smooth the transitions between different colors in image
+                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                    .setErodeSize(15)        // Shrink blobs back to original size
+                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                    .build();
+        }
+        blobs = colorLocator.getBlobs();
+    }
+
     /* METHODS */
-
-    public ColorBlobLocatorProcessor setColorGreen() {
-        colorLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // default color
-                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
-                .setRoi(ImageRegion.entireFrame())
-                .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
-                .setBlurSize(5)          // Smooth the transitions between different colors in image
-                .setDilateSize(15)       // Expand blobs to fill any divots on the edges
-                .setErodeSize(15)        // Shrink blobs back to original size
-                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
-                .build();
-        return colorLocator;
-    }
-
-    public ColorBlobLocatorProcessor setColorPurple() {
-        colorLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // default color
-                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
-                .setRoi(ImageRegion.entireFrame())
-                .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
-                .setBlurSize(5)          // Smooth the transitions between different colors in image
-                .setDilateSize(15)       // Expand blobs to fill any divots on the edges
-                .setErodeSize(15)        // Shrink blobs back to original size
-                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
-                .build();
-        return colorLocator;
-    }
 
     public double getX() {
         for (ColorBlobLocatorProcessor.Blob b : blobs) {
