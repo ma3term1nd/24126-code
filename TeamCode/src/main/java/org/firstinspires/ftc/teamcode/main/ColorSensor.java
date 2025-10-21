@@ -13,7 +13,6 @@ import java.util.List;
 public class ColorSensor {
 
     private ColorBlobLocatorProcessor colorLocator;
-    private ColorRange color;
     private List<ColorBlobLocatorProcessor.Blob> blobs;
 
     public ColorSensor(ColorBlobLocatorProcessor colorLocator, String color) {
@@ -28,6 +27,7 @@ public class ColorSensor {
                     .setErodeSize(15)        // Shrink blobs back to original size
                     .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
                     .build();
+            this.colorLocator = colorLocator;
         } else if (color.equals("green")) {
             colorLocator = new ColorBlobLocatorProcessor.Builder()
                     .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // color chosen
@@ -39,12 +39,17 @@ public class ColorSensor {
                     .setErodeSize(15)        // Shrink blobs back to original size
                     .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
                     .build();
+            this.colorLocator = colorLocator;
         }
         blobs = colorLocator.getBlobs();
     }
 
     /* METHODS */
 
+    public ColorBlobLocatorProcessor getColorSensor() {
+        return colorLocator;
+    }
+    
     public double getX() {
         for (ColorBlobLocatorProcessor.Blob b : blobs) {
             Circle circleFit = b.getCircle();
