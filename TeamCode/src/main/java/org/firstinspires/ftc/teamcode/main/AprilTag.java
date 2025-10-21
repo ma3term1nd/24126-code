@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.main;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
@@ -11,18 +10,14 @@ import java.util.List;
 /* UTILITY CLASS */
 
 public class AprilTag {
+    private AprilTagProcessor aprilTag;
 
-    public AprilTagProcessor aprilTag;
-    public VisionPortal visionPortal;
-
-    public AprilTagProcessor init() {
+    public AprilTag(AprilTagProcessor aprilTag) {
         aprilTag = new AprilTagProcessor // sensor
                 .Builder()
-                .setDrawTagOutline(true)
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-                .setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
                 .build();
-        return aprilTag;
+        this.aprilTag = aprilTag;
     }
 
     /* METHODS */
@@ -30,6 +25,10 @@ public class AprilTag {
     public boolean isAprilTag() {
         List<AprilTagDetection> detections = aprilTag.getDetections();
         return detections != null && !detections.isEmpty();
+    }
+
+    public AprilTagProcessor getAprilTag() {
+        return aprilTag;
     }
 
     public double getRange() {
@@ -65,16 +64,4 @@ public class AprilTag {
     }
 
     public void setOffset(float i) {aprilTag.setDecimation(i);}
-
-    public void stopAprilTag(VisionPortal visionPortal) {
-        if (visionPortal != null && aprilTag != null) {
-            visionPortal.setProcessorEnabled(aprilTag, false);
-        }
-    }
-
-    public void startAprilTag(VisionPortal visionPortal) {
-        if (visionPortal != null && aprilTag != null) {
-            visionPortal.setProcessorEnabled(aprilTag, true);
-        }
-    }
 }
