@@ -7,61 +7,45 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-/* UTILITY CLASS */
-
 public class AprilTag {
     private AprilTagProcessor aprilTag;
 
-    public AprilTag(AprilTagProcessor aprilTag) {
-        this.aprilTag = aprilTag;
-        aprilTag = new AprilTagProcessor // sensor
-                .Builder()
+    public AprilTag() {
+        aprilTag = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
-    }
-
-    /* METHODS */
-
-    public boolean isAprilTag() {
-        List<AprilTagDetection> detections = aprilTag.getDetections();
-        return detections != null && !detections.isEmpty();
     }
 
     public AprilTagProcessor getAprilTag() {
         return aprilTag;
     }
 
+    public boolean isAprilTag() {
+        List<AprilTagDetection> detections = aprilTag.getDetections();
+        return detections != null && !detections.isEmpty();
+    }
+
     public double getRange() {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if (currentDetections != null && !currentDetections.isEmpty()) {
-            return currentDetections.get(0).ftcPose.range;
-        }
-        return 0;
+        List<AprilTagDetection> d = aprilTag.getDetections();
+        return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.range : 0;
     }
 
     public double getAngle() {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if (currentDetections != null && !currentDetections.isEmpty()) {
-            return currentDetections.get(0).ftcPose.bearing;
-        }
-        return 0;
+        List<AprilTagDetection> d = aprilTag.getDetections();
+        return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.bearing : 0;
     }
 
     public double getHeight() {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if (currentDetections != null && !currentDetections.isEmpty()) {
-            return currentDetections.get(0).ftcPose.elevation;
-        }
-        return 0;
+        List<AprilTagDetection> d = aprilTag.getDetections();
+        return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.elevation : 0;
     }
 
     public double getID() {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        if (currentDetections != null && !currentDetections.isEmpty()) {
-            return currentDetections.get(0).id;
-        }
-        return 0;
+        List<AprilTagDetection> d = aprilTag.getDetections();
+        return (d != null && !d.isEmpty()) ? d.get(0).id : -1;
     }
 
-    public void setOffset(float i) {aprilTag.setDecimation(i);}
+    public void setOffset(float i) {
+        aprilTag.setDecimation(i);
+    }
 }
