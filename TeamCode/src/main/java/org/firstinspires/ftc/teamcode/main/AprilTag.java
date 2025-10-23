@@ -13,11 +13,11 @@ public class AprilTag {
     private AprilTagProcessor aprilTag;
 
     public AprilTag(AprilTagProcessor aprilTag) {
+        this.aprilTag = aprilTag;
         aprilTag = new AprilTagProcessor // sensor
                 .Builder()
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
-        this.aprilTag = aprilTag;
     }
 
     /* METHODS */
