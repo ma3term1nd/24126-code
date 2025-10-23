@@ -17,6 +17,7 @@ public class ColorSensor {
 
     public ColorSensor(ColorBlobLocatorProcessor colorLocator, String color) {
         if (color.equals("purple")) {
+            this.colorLocator = colorLocator;
             colorLocator = new ColorBlobLocatorProcessor.Builder()
                     .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // color chosen
                     .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
@@ -27,8 +28,8 @@ public class ColorSensor {
                     .setErodeSize(15)        // Shrink blobs back to original size
                     .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
                     .build();
-            this.colorLocator = colorLocator;
         } else if (color.equals("green")) {
+            this.colorLocator = colorLocator;
             colorLocator = new ColorBlobLocatorProcessor.Builder()
                     .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // color chosen
                     .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
@@ -39,7 +40,6 @@ public class ColorSensor {
                     .setErodeSize(15)        // Shrink blobs back to original size
                     .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
                     .build();
-            this.colorLocator = colorLocator;
         }
         blobs = colorLocator.getBlobs();
     }
