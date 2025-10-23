@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.main;
 
 import android.graphics.Color;
-
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.Circle;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
@@ -13,61 +11,52 @@ import java.util.List;
 public class ColorSensor {
 
     private ColorBlobLocatorProcessor colorLocator;
-    private List<ColorBlobLocatorProcessor.Blob> blobs;
 
-    public ColorSensor(ColorBlobLocatorProcessor colorLocator, String color) {
-        if (color.equals("purple")) {
-            this.colorLocator = colorLocator;
-            colorLocator = new ColorBlobLocatorProcessor.Builder()
-                    .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // color chosen
-                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
-                    .setRoi(ImageRegion.entireFrame())
-                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
-                    .setBlurSize(5)          // Smooth the transitions between different colors in image
-                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
-                    .setErodeSize(15)        // Shrink blobs back to original size
-                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
-                    .build();
-        } else if (color.equals("green")) {
-            this.colorLocator = colorLocator;
-            colorLocator = new ColorBlobLocatorProcessor.Builder()
-                    .setTargetColorRange(ColorRange.ARTIFACT_GREEN)   // color chosen
-                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
-                    .setRoi(ImageRegion.entireFrame())
-                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
-                    .setBlurSize(5)          // Smooth the transitions between different colors in image
-                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
-                    .setErodeSize(15)        // Shrink blobs back to original size
-                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
-                    .build();
-        }
-        blobs = colorLocator.getBlobs();
+    public ColorSensor(String color) {
+        ColorRange range = color.equals("purple") ?
+                ColorRange.ARTIFACT_PURPLE : ColorRange.ARTIFACT_GREEN;
+
+        colorLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(range)
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                .setRoi(ImageRegion.entireFrame())
+                .setCircleFitColor(Color.rgb(255, 255, 0))
+                .setBlurSize(5)
+                .setDilateSize(15)
+                .setErodeSize(15)
+                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                .build();
     }
-
-    /* METHODS */
 
     public ColorBlobLocatorProcessor getColorSensor() {
         return colorLocator;
     }
-    
-    public double getX() {
+
+    private ColorBlobLocatorProcessor.Blob getLargestBlob() {
+        List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
+        if (blobs.isEmpty()) return null;
+
+        ColorBlobLocatorProcessor.Blob largest = blobs.get(0);
         for (ColorBlobLocatorProcessor.Blob b : blobs) {
-            Circle circleFit = b.getCircle();
-            return circleFit.getX();
-        } {return 0.0;}
+            if (b.getCircle().getRadius() > largest.getCircle().getRadius()) {
+                largest = b;
+            }
+        }
+        return largest;
+    }
+
+    public double getX() {
+        var b = getLargestBlob();
+        return (b != null) ? b.getCircle().getX() : 0.0;
     }
 
     public double getY() {
-        for (ColorBlobLocatorProcessor.Blob b : blobs) {
-            Circle circleFit = b.getCircle();
-            return circleFit.getY();
-        } {return 0.0;}
+        var b = getLargestBlob();
+        return (b != null) ? b.getCircle().getY() : 0.0;
     }
 
     public double getRadius() {
-        for (ColorBlobLocatorProcessor.Blob b : blobs) {
-            Circle circleFit = b.getCircle();
-            return circleFit.getRadius();
-        } {return 0.0;}
+        var b = getLargestBlob();
+        return (b != null) ? b.getCircle().getRadius() : 0.0;
     }
 }
