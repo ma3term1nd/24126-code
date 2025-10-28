@@ -5,16 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.vision.VisionPortal;
-
 @TeleOp(name="TeleOP2026")
 
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     private MecanumDrive drive = new MecanumDrive();
-    private VisionPortal camera;
-    private AprilTag aprilTag = new AprilTag();
-    private ColorSensor colorSensor = new ColorSensor();
 
     private double strafe, forward, rotate;
     private boolean lastButtonState = false;
@@ -23,12 +17,9 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
 
     public void init() {
         drive.init(hardwareMap);
-        camera = VisionPortal.easyCreateWithDefaults(
-                hardwareMap.get(WebcamName.class, "webcam"));
-        camera.resumeStreaming();
-        //aprilTag.init(hardwareMap);
-        //colorSensor.init(hardwareMap);
         drive.imu.resetYaw();
+        //camera = VisionPortal.easyCreateWithDefaults(
+                //hardwareMap.get(WebcamName.class, "webcam"));
         //belt1 = hardwareMap.get(DcMotor.class, "belt1");
         //belt2 = hardwareMap.get(DcMotor.class, "belt2");
         //shooter = hardwareMap.get(DcMotor.class, "shooter");
@@ -46,7 +37,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         }*/
 
         /* COLOR-SENSOR */
-
+        
 
         /* SLOW-MODE */
         boolean curButtonState = gamepad1.left_bumper;
@@ -57,13 +48,12 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
                 drive.maxSpeed = 1.0;
             }
         }
+        lastButtonState = curButtonState;
 
-        /* RESET-YAW */
+        /* RESET-DRIVE */
         if (gamepad1.right_bumper) {
             drive.imu.resetYaw();
         }
-
-        lastButtonState = curButtonState;
 
         /* DRIVETRAIN */
         forward = -gamepad1.left_stick_y;
@@ -71,7 +61,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         rotate = -gamepad1.right_stick_x;
 
         drive.driveFieldRelative(forward, strafe, rotate);
-
+        
         /* DRIVER 2 CONTROLS */
         /*if (gamepad2.x) { //for both belts
             belt1.setPower(-1);
