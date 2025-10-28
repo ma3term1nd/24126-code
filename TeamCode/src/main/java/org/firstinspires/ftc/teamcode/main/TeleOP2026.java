@@ -22,7 +22,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         drive.init(hardwareMap);
         drive.imu.resetYaw();
         //camera = new VisionPortal.Builder()
-                //.addProcessors(april.init(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
+                //.addProcessors(aprilTag.getAprilTag(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
                 //.setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 //.build();
         //belt1 = hardwareMap.get(DcMotor.class, "belt1");
@@ -42,8 +42,16 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         }*/
 
         /* COLOR-SENSOR */
-        /*if () {
+        /*if (pColorSensor.getLargestBlob() > 0) {
+            telemetry.addLine("pDistance: " pColorSensor.getX());    
+        } else {
+            telemetry.addLine("no purple artifacts detected");
+        }
         
+        if (gColorSensor.getLargestBlob() > 0) {
+            telemetry.addLine("gDistance: " gColorSensor.getX());    
+        } else {
+            telemetry.addLine("no green artifacts detected");
         }*/
 
         /* SLOW-MODE */
