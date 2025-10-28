@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOP2026")
 
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
-    private MecanumDrive drive = new MecanumDrive();
-
-    private double strafe, forward, rotate;
-    private boolean lastButtonState = false;
-    private ElapsedTime timer = new ElapsedTime(100);
-    private DcMotor belt1, belt2, shooter;
+    MecanumDrive drive = new MecanumDrive();
+    //ColorSensor pColorSensor = new ColorSensor("purple");
+    //ColorSensor gColorSensor = new ColorSensor("green");
+    //AprilTag aprilTag = new AprilTag();
+    double strafe, forward, rotate;
+    boolean lastButtonState = false;
+    ElapsedTime timer = new ElapsedTime(100);
+    DcMotor belt1, belt2, shooter;
 
     public void init() {
         drive.init(hardwareMap);
@@ -37,7 +39,9 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         }*/
 
         /* COLOR-SENSOR */
+        /*if () {
         
+        }*/
 
         /* SLOW-MODE */
         boolean curButtonState = gamepad1.left_bumper;
