@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     MecanumDrive drive = new MecanumDrive();
+    //VisionPortal camera = new VisionPortal();
     //ColorSensor pColorSensor = new ColorSensor("purple");
     //ColorSensor gColorSensor = new ColorSensor("green");
     //AprilTag aprilTag = new AprilTag();
@@ -20,8 +21,10 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     public void init() {
         drive.init(hardwareMap);
         drive.imu.resetYaw();
-        //camera = VisionPortal.easyCreateWithDefaults(
-                //hardwareMap.get(WebcamName.class, "webcam"));
+        //camera = new VisionPortal.Builder()
+                //.addProcessors(april.init(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
+                //.setCamera(hardwareMap.get(WebcamName.class, "webcam"))
+                //.build();
         //belt1 = hardwareMap.get(DcMotor.class, "belt1");
         //belt2 = hardwareMap.get(DcMotor.class, "belt2");
         //shooter = hardwareMap.get(DcMotor.class, "shooter");
