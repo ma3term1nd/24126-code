@@ -7,6 +7,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
+/* UTILITY CLASS */
+
 public class AprilTag {
     private AprilTagProcessor aprilTag;
 
@@ -16,6 +18,8 @@ public class AprilTag {
                 .build();
     }
 
+    /* METHODS */
+    
     public AprilTagProcessor getAprilTag() {
         return aprilTag;
     }
