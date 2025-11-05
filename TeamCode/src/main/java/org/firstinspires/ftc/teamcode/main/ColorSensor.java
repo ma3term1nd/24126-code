@@ -7,17 +7,16 @@ import org.firstinspires.ftc.vision.opencv.ColorRange;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
 import java.util.List;
 
+/* UTILITY CLASS */
+
 public class ColorSensor {
 
     private final ColorBlobLocatorProcessor colorLocator;
 
     public ColorSensor(String color) {
-        // Choose color range based on argument
-        ColorRange range = color.equalsIgnoreCase("purple")
+        ColorRange range = color.equalsIgnoreCase("purple") //"purple" or "green"
                 ? ColorRange.ARTIFACT_PURPLE
                 : ColorRange.ARTIFACT_GREEN;
-
-        // Build the processor
         colorLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(range)
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
@@ -32,12 +31,32 @@ public class ColorSensor {
                 .build();
     }
 
-    /** Returns the color locator processor (used to add to a VisionPortal). */
+    /* METHODS */
+
+    /* gets blob circle radius safely */
+    private double getBlobRadius(ColorBlobLocatorProcessor.Blob blob) {
+        Circle c = blob.getCircle();
+        return (c != null) ? c.getRadius() : 0.0;
+    }
+
+    /* gets blob circle X position */
+    private double getBlobX(ColorBlobLocatorProcessor.Blob blob) {
+        Circle c = blob.getCircle();
+        return (c != null) ? c.getX() : 0.0;
+    }
+
+    /* gets blob circle Y position */
+    private double getBlobY(ColorBlobLocatorProcessor.Blob blob) {
+        Circle c = blob.getCircle();
+        return (c != null) ? c.getY() : 0.0;
+    }
+    
+    /* returns the color locator */
     public ColorBlobLocatorProcessor getColorSensor() {
         return colorLocator;
     }
 
-    /** Finds the largest blob by circle radius. */
+    /* finds the largest blob by circle radius */
     private ColorBlobLocatorProcessor.Blob getLargestBlob() {
         List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
         if (blobs == null || blobs.isEmpty()) return null;
@@ -55,37 +74,19 @@ public class ColorSensor {
         return largest;
     }
 
-    /** Gets blob circle radius safely. */
-    private double getBlobRadius(ColorBlobLocatorProcessor.Blob blob) {
-        Circle c = blob.getCircle();
-        return (c != null) ? c.getRadius() : 0.0;
-    }
-
-    /** Gets blob circle X position. */
-    private double getBlobX(ColorBlobLocatorProcessor.Blob blob) {
-        Circle c = blob.getCircle();
-        return (c != null) ? c.getX() : 0.0;
-    }
-
-    /** Gets blob circle Y position. */
-    private double getBlobY(ColorBlobLocatorProcessor.Blob blob) {
-        Circle c = blob.getCircle();
-        return (c != null) ? c.getY() : 0.0;
-    }
-
-    /** Returns the X position of the largest blob. */
+    /* returns the X position of the largest blob */
     public double getX() {
         ColorBlobLocatorProcessor.Blob b = getLargestBlob();
         return (b != null) ? getBlobX(b) : 0.0;
     }
 
-    /** Returns the Y position of the largest blob. */
+    /* returns the Y position of the largest blob */
     public double getY() {
         ColorBlobLocatorProcessor.Blob b = getLargestBlob();
         return (b != null) ? getBlobY(b) : 0.0;
     }
 
-    /** Returns the radius of the largest blob. */
+    /* returns the radius of the largest blob */
     public double getRadius() {
         ColorBlobLocatorProcessor.Blob b = getLargestBlob();
         return (b != null) ? getBlobRadius(b) : 0.0;
