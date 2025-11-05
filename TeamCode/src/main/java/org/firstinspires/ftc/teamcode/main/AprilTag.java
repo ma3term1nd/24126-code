@@ -19,36 +19,43 @@ public class AprilTag {
     }
 
     /* METHODS */
-    
+
+    /* returns the AprilTag */
     public AprilTagProcessor getAprilTag() {
         return aprilTag;
     }
 
+    /* returns true if a tag is detected */
     public boolean isAprilTag() {
         List<AprilTagDetection> detections = aprilTag.getDetections();
         return detections != null && !detections.isEmpty();
     }
 
+    /* returns the distance from the tag */
     public double getRange() {
         List<AprilTagDetection> d = aprilTag.getDetections();
         return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.range : 0;
     }
 
+    /* returns the angle from the tag */
     public double getAngle() {
         List<AprilTagDetection> d = aprilTag.getDetections();
         return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.bearing : 0;
     }
 
+    /* returns the height(y) from the tag */
     public double getHeight() {
         List<AprilTagDetection> d = aprilTag.getDetections();
         return (d != null && !d.isEmpty()) ? d.get(0).ftcPose.elevation : 0;
     }
 
+    /* returns the id of the tag found */
     public double getID() {
         List<AprilTagDetection> d = aprilTag.getDetections();
         return (d != null && !d.isEmpty()) ? d.get(0).id : -1;
     }
 
+    /* sets an offset for the AprilTag sensor */
     public void setOffset(float i) {
         aprilTag.setDecimation(i);
     }
