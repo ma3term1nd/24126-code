@@ -91,5 +91,4 @@ public class ColorSensor {
         ColorBlobLocatorProcessor.Blob b = getLargestBlob();
         return (b != null) ? getBlobRadius(b) : 0.0;
     }
-    
 }
