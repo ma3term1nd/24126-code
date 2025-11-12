@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.main;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOP2026")
@@ -16,7 +17,8 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     double strafe, forward, rotate;
     boolean lastButtonState = false;
     ElapsedTime timer = new ElapsedTime(100);
-    DcMotor belt1, belt2, shooter;
+    DcMotor belt, shooter;
+    Servo transfer;
 
     public void init() {
         drive.init(hardwareMap);
@@ -25,9 +27,9 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
                 //.addProcessors(aprilTag.getAprilTag(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
                 //.setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 //.build();
-        //belt1 = hardwareMap.get(DcMotor.class, "belt1");
-        //belt2 = hardwareMap.get(DcMotor.class, "belt2");
-        //shooter = hardwareMap.get(DcMotor.class, "shooter");
+        //belt = hardwareMap.get(DcMotor.class, "belt");
+        transfer = hardwareMap.get(Servo.class, "transfer");
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
     }
 
     public void loop() {
@@ -38,7 +40,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
             telemetry.addLine("Height: " + aprilTag.getHeight());
             telemetry.addLine("Angle: " + aprilTag.getAngle());
         } else {
-            telemetry.addLine("nothing detected");
+            telemetry.addLine("no april tags detected");
         }*/
 
         /* COLOR-SENSOR */
@@ -77,35 +79,36 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
 
         drive.driveFieldRelative(forward, strafe, rotate);
         
-        /* DRIVER 2 CONTROLS */
-        /*if (gamepad2.x) { //for both belts
-            belt1.setPower(-1);
-            belt2.setPower(-1);
+        /* INTAKE */
+        /*if (gamepad2.a) {
+            belt.setPower(-1);
         }
-
-        if (gamepad2.a) {
-            belt1.setPower(-1);
-        }
-
-        if (gamepad2.a) {
-            belt2.setPower(-1);
-        }*/
-
+        */
+        
         /* OUT-TAKE */
-        /*double firstTime = 1.0; //shoots the ball and waits
-        double secondTime = 2.0; //moves the next ball into place
+        double firstTime = 0.5; //shoots the ball and waits
+        double secondTime = 1.0; //moves the next ball into place
         if (gamepad2.y) {
             timer.reset();
         }
-
-        if (timer.time() >= 0 && timer.time() < firstTime) {
+        
+        if (timer.time() <= 3.5) { //total time
             shooter.setPower(-1);
-        } else if (timer.time() >= firstTime && timer.time() < secondTime) {
+            for (int i=0; i<3; i++) { //loops thrice
+                int x = secondTime*i;
+                if (timer.time() >= 0 && timer.time() < firstTime+x) { //opens transfer to shoot
+                    transfer.setPosition(0.03);
+                } else if (timer.time() >= firstTime && timer.time() < secondTime+x) {//closes transfer to queue a ball
+                    transfer.setPosition(0.0);
+                }
+            }
+        } else { //turn off everything
             shooter.setPower(0);
-            //move belt1
-        }*/
-
+            transfer.setPosition(0);
+        }
+        
         /* TELEMETRY */
         telemetry.addData("speed: ", drive.maxSpeed);
+        telemetry.addData("time: ", timer.time());
     }
 }
