@@ -59,4 +59,5 @@ public class AprilTag {
     public void setOffset(float i) {
         aprilTag.setDecimation(i);
     }
+    
 }
