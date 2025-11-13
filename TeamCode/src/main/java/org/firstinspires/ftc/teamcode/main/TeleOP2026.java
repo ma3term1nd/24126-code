@@ -27,9 +27,24 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
                 //.addProcessors(aprilTag.getAprilTag(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
                 //.setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 //.build();
-        //belt = hardwareMap.get(DcMotor.class, "belt");
+        belt = hardwareMap.get(DcMotor.class, "belt");
         transfer = hardwareMap.get(Servo.class, "transfer");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+    }
+
+    public void Transfer() {
+        double firstTime = 0.5; //shoots the ball and waits
+        double secondTime = 1.0; //moves the next ball into place
+
+        shooter.setPower(-1);
+        for (int i=0; i<3; i++) { //loops thrice
+            int increment = (int) secondTime * i;
+            if (timer.time() >= 0 && timer.time() < firstTime + increment) { //opens transfer to shoot
+                transfer.setPosition(0.03);
+            } else if (timer.time() >= firstTime + increment && timer.time() < secondTime + increment) { //closes transfer to queue a ball
+                transfer.setPosition(0.0);
+            }
+        }
     }
 
     public void loop() {
@@ -80,28 +95,20 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         drive.driveFieldRelative(forward, strafe, rotate);
         
         /* INTAKE */
-        /*if (gamepad2.a) {
+        if (gamepad2.aWasPressed()) {
             belt.setPower(-1);
+        } else if (gamepad2.aWasReleased()) {
+            belt.setPower(0);
         }
-        */
         
         /* OUT-TAKE */
-        double firstTime = 0.5; //shoots the ball and waits
-        double secondTime = 1.0; //moves the next ball into place
+
         if (gamepad2.y) {
             timer.reset();
         }
-        
-        if (timer.time() <= secondTime*3) { //total time
-            shooter.setPower(-1);
-            for (int i=0; i<3; i++) { //loops thrice
-                int x = secondTime*i;
-                if (timer.time() >= 0 && timer.time() < firstTime+x) { //opens transfer to shoot
-                    transfer.setPosition(0.03);
-                } else if (timer.time() >= firstTime && timer.time() < secondTime+x) {//closes transfer to queue a ball
-                    transfer.setPosition(0.0);
-                }
-            }
+
+        if (timer.time() <= 3.0) { //total time
+            Transfer();
         } else { //turn off everything
             shooter.setPower(0);
             transfer.setPosition(0);
