@@ -92,7 +92,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
             timer.reset();
         }
         
-        if (timer.time() <= 3.5) { //total time
+        if (timer.time() <= secondTime*3) { //total time
             shooter.setPower(-1);
             for (int i=0; i<3; i++) { //loops thrice
                 int x = secondTime*i;
