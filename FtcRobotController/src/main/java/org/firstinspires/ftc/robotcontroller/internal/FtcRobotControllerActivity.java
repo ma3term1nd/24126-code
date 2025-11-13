@@ -46,9 +46,9 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+//import androidx.annotation.NonNull;
+//import androidx.annotation.Nullable;
+//import androidx.annotation.StringRes;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -673,13 +673,13 @@ public class FtcRobotControllerActivity extends Activity
 
     updateUIAndRequestRobotSetup();
     programmingModeManager.setState(new FtcRobotControllerServiceState() {
-      @NonNull
+      //@NonNull
       @Override
       public WebServer getWebServer() {
         return service.getWebServer();
       }
 
-      @Nullable
+      // @Nullable
       @Override
       public OnBotJavaHelper getOnBotJavaHelper() {
         return service.getOnBotJavaHelper();
@@ -710,7 +710,7 @@ public class FtcRobotControllerActivity extends Activity
     }
   }
 
-  private void requestRobotSetup(@Nullable Runnable runOnComplete) {
+  private void requestRobotSetup(Runnable runOnComplete) {
     if (controllerService == null) return;
 
     RobotConfigFile file = cfgFileMgr.getActiveConfigAndUpdateUI();
@@ -762,7 +762,7 @@ public class FtcRobotControllerActivity extends Activity
       });
   }
 
-  private void showRestartRobotCompleteToast(@StringRes int resid) {
+  private void showRestartRobotCompleteToast(int resid) {
     AppUtil.getInstance().showToast(UILocation.BOTH, AppUtil.getDefContext().getString(resid));
   }
 

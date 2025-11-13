@@ -9,7 +9,7 @@ import java.util.List;
 
 /* UTILITY CLASS */
 
-public class ColorSensor {
+public class  ColorSensor {
 
     private final ColorBlobLocatorProcessor colorLocator;
 

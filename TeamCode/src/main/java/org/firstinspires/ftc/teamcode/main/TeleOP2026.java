@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp(name="TeleOP2026")
 
 public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
@@ -16,9 +16,15 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     //AprilTag aprilTag = new AprilTag();
     double strafe, forward, rotate;
     boolean lastButtonState = false;
+    boolean outakeToggleState = false;
+    boolean lastIntakeButtonState = false;
+    boolean intakeToggle = false;
     ElapsedTime timer = new ElapsedTime(100);
+    ElapsedTime timer1 = new ElapsedTime(100);
     DcMotor belt, shooter;
     Servo transfer;
+    double servoUpPosition = 0.06;
+    double servoDownPosition = 0.0;
 
     public void init() {
         drive.init(hardwareMap);
@@ -27,12 +33,17 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
                 //.addProcessors(aprilTag.getAprilTag(), pColorSensor.getColorSensor(), gColorSensor.getColorSensor())
                 //.setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 //.build();
-        //belt = hardwareMap.get(DcMotor.class, "belt");
+
         transfer = hardwareMap.get(Servo.class, "transfer");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+
+        belt = hardwareMap.get(DcMotor.class, "belt");
+        belt.setDirection(DcMotor.Direction.REVERSE);
+        belt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void loop() {
+
+    public void  loop() {
         /* APRIL-TAG-SENSOR */
         /*if (aprilTag.isAprilTag()) {
             telemetry.addLine("ID: " + aprilTag.getID());
@@ -65,50 +76,86 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
                 drive.maxSpeed = 1.0;
             }
         }
+
         lastButtonState = curButtonState;
 
         /* RESET-DRIVE */
         if (gamepad1.right_bumper) {
             drive.imu.resetYaw();
         }
-
+////////////*-/
         /* DRIVETRAIN */
         forward = -gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
-        rotate = -gamepad1.right_stick_x;
+        rotate = gamepad1.right_stick_x;
 
         drive.driveFieldRelative(forward, strafe, rotate);
-        
+
         /* INTAKE */
-        /*if (gamepad2.a) {
-            belt.setPower(-1);
+
+        boolean currentIntakeButtonState = gamepad2.a;
+        if (currentIntakeButtonState && !lastIntakeButtonState){
+            intakeToggle = !intakeToggle;
+            if (intakeToggle){
+                belt.setPower(-1);
+            }
+            else {
+                belt.setPower(0);
+            }
         }
-        */
+        lastIntakeButtonState = currentIntakeButtonState;
         
         /* OUT-TAKE */
-        double firstTime = 0.5; //shoots the ball and waits
-        double secondTime = 1.0; //moves the next ball into place
+
         if (gamepad2.y) {
             timer.reset();
+            outakeToggleState = true;
         }
-        
-        if (timer.time() <= secondTime*3) { //total time
-            shooter.setPower(-1);
-            for (int i=0; i<3; i++) { //loops thrice
-                int x = secondTime*i;
-                if (timer.time() >= 0 && timer.time() < firstTime+x) { //opens transfer to shoot
-                    transfer.setPosition(0.03);
-                } else if (timer.time() >= firstTime && timer.time() < secondTime+x) {//closes transfer to queue a ball
-                    transfer.setPosition(0.0);
-                }
-            }
+
+        if (gamepad2.b){
+            outakeToggleState = false;
+        }
+        if (timer.time() <= 6.00 && outakeToggleState) { //total time
+            transfer();
         } else { //turn off everything
             shooter.setPower(0);
-            transfer.setPosition(0);
+            transfer.setPosition(servoDownPosition);
         }
-        
+
         /* TELEMETRY */
+        telemetry.addData("name:", "the goonbot");
         telemetry.addData("speed: ", drive.maxSpeed);
-        telemetry.addData("time: ", timer.time());
+        telemetry.addData("imu: ", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
     }
+    /*
+
+
+     */
+    public void transfer() {
+        //turns on shooter
+        shooter.setPower(-1);
+
+        //0.5 seconds up position
+        if (timer.time() >= 1.25 && timer.time() < 1.75){
+            transfer.setPosition(servoUpPosition);}
+        //1.5 seconds down position
+        else if (timer.time() >= 1.75 && timer.time() < 3.25){
+            transfer.setPosition(servoDownPosition);}
+        //0.5 seconds up position
+        else if (timer.time() >= 3.25 && timer.time() < 3.75){
+            transfer.setPosition(servoUpPosition);
+        }
+        //1.75 seconds down position
+        else if (timer.time() >= 3.5 && timer.time() < 5.25){
+            transfer.setPosition(servoDownPosition);
+        }
+        //0.5 seconds up position
+        else if (timer.time() > 5.25 && timer.time() <= 5.75){
+            transfer.setPosition(servoUpPosition);
+        }
+
+
+    }
+
 }
