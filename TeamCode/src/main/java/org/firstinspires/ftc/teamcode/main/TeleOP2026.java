@@ -135,6 +135,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     public void transfer() {
         //turns on shooter
         shooter.setPower(-1);
+        // type
 
         //0.5 seconds up position
         if (timer.time() >= 1.25 && timer.time() < 1.75){
