@@ -156,10 +156,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
             transfer.setPosition(servoUpPosition);
         }
 
-        if (0 == 0) {
-            System.out.println("Yes");
-            // test
-        }
+
 
     }
 
