@@ -152,10 +152,14 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
             transfer.setPosition(servoDownPosition);
         }
         //0.5 seconds up position
-        else if (timer.time() > 5.25 && timer.time() <= 5.75){
+        else if (timer.time() > 5.25 && timer.time() <= 5.75) {
             transfer.setPosition(servoUpPosition);
         }
 
+        if (0 == 0) {
+            System.out.println("Yes");
+            // test
+        }
 
     }
 
