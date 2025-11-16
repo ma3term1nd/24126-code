@@ -19,6 +19,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
     boolean outakeToggleState = false;
     boolean lastIntakeButtonState = false;
     boolean intakeToggle = false;
+    boolean intakeToggle2 = true;
     ElapsedTime timer = new ElapsedTime(100);
     ElapsedTime timer1 = new ElapsedTime(100);
     DcMotor belt, shooter;
@@ -96,6 +97,7 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
         boolean currentIntakeButtonState = gamepad2.a;
         if (currentIntakeButtonState && !lastIntakeButtonState){
             intakeToggle = !intakeToggle;
+
             if (intakeToggle){
                 belt.setPower(-1);
             }
@@ -104,7 +106,14 @@ public class TeleOP2026 extends OpMode { //adb connect 192.168.43.1:5555
             }
         }
         lastIntakeButtonState = currentIntakeButtonState;
-        
+
+        if(gamepad2.x){
+            if(intakeToggle) {
+                belt.setPower(1);
+                intakeToggle = false;
+            }
+
+        }
         /* OUT-TAKE */
 
         if (gamepad2.y) {
