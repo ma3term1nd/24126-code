@@ -18,7 +18,7 @@ public class IntakeForNow {
         //instance variable
         this.intakeMotorPower = intakeMotorServoPower;
 
-        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
+        intakeMotor = hwMap.get(DcMotor.class, "intake");
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

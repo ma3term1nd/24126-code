@@ -21,11 +21,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.IntakeForNow;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.ShooterForNow;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-
-
+@Disabled
 @TeleOp(name = "TeleOpV2")
-public class TeleOpV2 extends OpMode {
+public class TEST extends OpMode {
 
     //flywheel variables
     boolean flywheelToggle = false;
@@ -45,14 +43,12 @@ public class TeleOpV2 extends OpMode {
     //changes in voltage
     double currentTuningVoltage = 0;
 
-
-    /*enum DriveState {
+    enum DriveState {
         normalDrive,
         roadRunnerDrive;
     }
-     */
 
-    //DriveState state = DriveState.normalDrive;
+    DriveState state = DriveState.normalDrive;
     ShooterForNow shoot;
     IntakeForNow intake;
     ElapsedTime timer = new ElapsedTime(100);
@@ -65,40 +61,93 @@ public class TeleOpV2 extends OpMode {
 
     public void init(){
 
-    //drive.init(hardwareMap);
-    intake = new IntakeForNow(hardwareMap, 1);
-    //shoot = new ShooterForNow(hardwareMap, shooterVelocity, shooterMaxVelocity);
-    //shoot.kickerIsFlat();
+        //drive.init(hardwareMap);
 
+        shoot = new ShooterForNow(hardwareMap, shooterVelocity, shooterMaxVelocity);
+        shoot.kickerIsFlat();
+
+        intake = new IntakeForNow(hardwareMap, intakePower);
 
     }//end of init method
 
     public void loop(){
 
+        //SWITCH STATEMENT
+        switch(state) { //
+            case normalDrive:
 
-        //testingForNow
-        //shoot.findMaximumVelocity();
+                //if you are on normal drive, pressing A returns to roadrunnerDrive
+                if(gamepad1.a){
+                    state = DriveState.roadRunnerDrive;
+                }
 
-        //shoot.shooterOn();
-        //shoot.shooterOn();
+                //intake - Driver 2
 
-        if(gamepad2.y){
-            intake.intakeIn();
+                if(gamepad2.y){
+                    intake.intakeIn();
+                }
+                else if(gamepad2.x){
+                    intake.intakeOut();
+                }
+                else {
+                    intake.intakeOff();
+                }
+                //end of intake
+
+                break; //end of normalDrive code
+
+            case roadRunnerDrive:
+
+                //if you are on roadrunner drive, clicking B returns to normal drive
+                if(gamepad1.b){
+                    state = DriveState.normalDrive;
+                }
+
+                break; //end of roadRunnerDrive Code
+        }//end of switch statement
+
+        //flywheel
+
+        boolean currentFlywheelButton = gamepad2.a;
+        if(currentFlywheelButton && !lastFlywheelButtonState){
+            flywheelToggle= !flywheelToggle;
         }
-        else if(gamepad2.x){
-            intake.intakeOut();
+        lastFlywheelButtonState = currentFlywheelButton;
+
+        if(flywheelToggle){
+            shoot.shooterOn();
         }
         else {
-            intake.intakeOff();
+            shoot.shooterOff();
         }
+
+
+        //kicker
+        if(gamepad2.b){
+            timer.reset();
+            kickerToggle = !kickerToggle;
+        }
+
+        if(kickerToggle) {
+
+            //value has to be greater than last one so kicker can return to flat
+                kickerSequence();
+        }
+        else {
+
+            shoot.kickerIsFlat();
+
+        }
+
+
 
 
         //dashboard
-       // dashboardTelemetry.addData("input: reference velocity", shoot.referenceVelocity);
-       // dashboardTelemetry.addData("output: current velocity", shoot.currentVelocity);
+        dashboardTelemetry.addData("input: reference velocity", shoot.referenceVelocity);
+        dashboardTelemetry.addData("output: current velocity", shoot.currentVelocity);
 
         //telemetry
-        //telemetry.addData("MaxVelocity", shoot.maximumVelocity);
+        telemetry.addData("MaxVelocity", shoot.maximumVelocity);
         dashboardTelemetry.update();
 
 
@@ -121,7 +170,10 @@ public class TeleOpV2 extends OpMode {
             shoot.kickerIsUp();
         }
         else if (timer.time() > 0){
-            shoot.kickerIsUp();
+            shoot.kickerIsFlat();
+        }
+        else if(timer.time()>0){
+            kickerToggle = false; //end of sequence
         }
     }//end of method
 
@@ -196,5 +248,3 @@ state = DriveState.normalDrive;
         }
 
  */
-
-
