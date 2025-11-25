@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,8 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shooter {
     //declaring motors & servos
-    DcMotor shooterMotor;
-    Servo shooterHood, shooterBlocker;
+    DcMotorEx shooterMotor;
+   Servo kicker, shooterBlocker;
     enum shooterZones {
         //find out what zones
         zone1,
@@ -51,14 +52,18 @@ public class Shooter {
     public Shooter (HardwareMap hwMap){
         //initializing DcMotors
 
-        shooterMotor = hwMap.get(DcMotor.class, "shooter");
-
+        shooterMotor = hwMap.get(DcMotorEx.class, "shooter");
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //initializing Servos
-        shooterHood = hwMap.get(Servo.class, "hoodServo");
-        shooterBlocker = hwMap.get(Servo.class, "shooterBlockerServo");
+        kicker = hwMap.get(Servo.class, "kicker");
+        //shooterBlocker = hwMap.get(Servo.class, "shooterBlockerServo");
 
     } //end of constructor
 
+} //end of class
+
+
+    /*
     public void shoots (shooterZones zone){
         if(zone == shooterZones.zone1){
 
@@ -102,5 +107,4 @@ public class Shooter {
         shooterBlocker.setPosition(shooterBlockerOpen);
 
     }
-
-} //end of class
+*/

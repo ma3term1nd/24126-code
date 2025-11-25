@@ -1,54 +1,190 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.OpModes.MecanumClass;
-@TeleOp(name = "teleopV2")
+import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDriveAuto;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.SubsystemsForNow.IntakeForNow;
+import org.firstinspires.ftc.teamcode.SubsystemsForNow.ShooterForNow;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@TeleOp(name = "TeleOpV2")
 public class TeleOpV2 extends OpMode {
-    CRServo trasnfertester;
-    enum DriveState {
+
+    //flywheel variables
+    boolean flywheelToggle = false;
+    boolean lastFlywheelButtonState = false;
+
+    //kicker variables
+    boolean kickerToggle = false;
+    boolean lastKickerButtonState = false;
+
+    //shooter variables
+    double shooterVelocity = 0;
+    double shooterMaxVelocity = 0;
+
+    //intake variables
+    int intakePower = 1;
+
+    //changes in voltage
+    double currentTuningVoltage = 0;
+
+
+    /*enum DriveState {
         normalDrive,
         roadRunnerDrive;
     }
+     */
+
+    //DriveState state = DriveState.normalDrive;
+    ShooterForNow shoot;
+    IntakeForNow intake;
+    ElapsedTime timer = new ElapsedTime(100);
+
+    //ftc dashboard
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
+
     MecanumClass drive = new MecanumClass();
+
     public void init(){
 
-        trasnfertester = hardwareMap.get(CRServo.class, "transfer1");
-        trasnfertester.setDirection(DcMotorSimple.Direction.FORWARD);
-        trasnfertester.setPower(0);
+    //drive.init(hardwareMap);
 
-    }
-    public void loop(){ //start of loop
-        if(gamepad1.b){
-           trasnfertester.setPower(1);
-        }
-        /*
-        DriveState state = DriveState.normalDrive;
-        switch(state){
-            case normalDrive:
+    shoot = new ShooterForNow(hardwareMap, shooterVelocity, shooterMaxVelocity);
+    shoot.kickerIsFlat();
 
-                if(gamepad1.a){
-                    state = DriveState.roadRunnerDrive; //if press a button, switches to roadrunner mode
-                }
+    intake = new IntakeForNow(hardwareMap, intakePower);
+
+    }//end of init method
+
+    public void loop(){
 
 
-                break;
+        //testingForNow
+        //shoot.findMaximumVelocity();
 
-            case roadRunnerDrive:
+        //shoot.shooterOn();
+        shoot.shooterOn();
 
-                if(gamepad1.b){
-                    state = DriveState.normalDrive; //if press b button, switches to normal mode
-                }
-                break;
-        }
-        */
+
+
+
+        //dashboard
+        dashboardTelemetry.addData("input: reference velocity", shoot.referenceVelocity);
+        dashboardTelemetry.addData("output: current velocity", shoot.currentVelocity);
+
+        //telemetry
+        telemetry.addData("MaxVelocity", shoot.maximumVelocity);
+        dashboardTelemetry.update();
+
 
     } //end of loop
+    //Methods
+    public void kickerSequence(){
+        if(timer.time() > 0 && timer.time() < 0){ //change 0s
+            shoot.kickerIsUp();
+        }
+        else if (timer.time()> 0 && timer.time() < 0){
+            shoot.kickerIsFlat();
+        }
+        else if (timer.time()> 0 && timer.time() < 0){
+            shoot.kickerIsUp();
+        }
+        else if (timer.time()> 0 && timer.time() < 0){
+            shoot.kickerIsFlat();
+        }
+        else if (timer.time()> 0 && timer.time() < 0){
+            shoot.kickerIsUp();
+        }
+        else if (timer.time() > 0){
+            shoot.kickerIsUp();
+        }
+    }//end of method
+
+
 }//end of class
+/*
+switch(state) { //
+        case normalDrive:
+
+        //if you are on normal drive, pressing A returns to roadrunnerDrive
+        if(gamepad1.a){
+state = DriveState.roadRunnerDrive;
+                }
+
+                        //intake - Driver 2
+
+if(gamepad2.y){
+            intake.intakeIn();
+        }
+        else if(gamepad2.x){
+            intake.intakeOut();
+        }
+        else {
+            intake.intakeOff();
+        }
+                        //end of intake
+
+                        break; //end of normalDrive code
+
+                        case roadRunnerDrive:
+
+        //if you are on roadrunner drive, clicking B returns to normal drive
+        if(gamepad1.b){
+state = DriveState.normalDrive;
+                }
+
+                        break; //end of roadRunnerDrive Code
+                        }//end of switch statement
+
+        //flywheel
+
+        boolean currentFlywheelButton = gamepad2.a;
+        if(currentFlywheelButton && !lastFlywheelButtonState){
+            flywheelToggle= !flywheelToggle;
+        }
+        lastFlywheelButtonState = currentFlywheelButton;
+
+        if(flywheelToggle){
+            shoot.shooterOn();
+        }
+        else {
+            shoot.shooterOff();
+        }
+
+
+        //kicker
+        if(gamepad2.b){
+            timer.reset();
+            kickerToggle = !kickerToggle;
+        }
+
+        if(kickerToggle) {
+
+            if(timer.time() < 0) { //value has to be greater than last one so kicker can return to flat
+                kickerSequence();
+            }
+        }
+        else {
+
+            shoot.kickerIsFlat();
+
+        }
+
+ */
+
+

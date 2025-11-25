@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.OpModes.MecanumClass;
 
-@TeleOp(name="TeleOP2026")
+@TeleOp(name="TeleOpV1")
 
-public class TeleOpTheVikes extends OpMode { //adb connect 192.168.43.1:5555
+public class TeleOpV1 extends OpMode { //adb connect 192.168.43.1:5555
     MecanumClass drive = new MecanumClass();
     //VisionPortal camera = new VisionPortal();
     //ColorSensor pColorSensor = new ColorSensor("purple");
@@ -30,6 +29,7 @@ public class TeleOpTheVikes extends OpMode { //adb connect 192.168.43.1:5555
     Servo transfer;
     double servoUpPosition = 0.06;
     double servoDownPosition = 0.0;
+
 
     public void init() {
         drive.init(hardwareMap);
@@ -88,7 +88,7 @@ public class TeleOpTheVikes extends OpMode { //adb connect 192.168.43.1:5555
         if (gamepad1.right_bumper) {
             drive.imu.resetYaw();
         }
-////////////*-/
+
         /* DRIVETRAIN */
         forward = -gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
@@ -144,6 +144,8 @@ public class TeleOpTheVikes extends OpMode { //adb connect 192.168.43.1:5555
         telemetry.addData("name:", "the goonbot");
         telemetry.addData("speed: ", drive.maxSpeed);
         telemetry.addData("imu: ", drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        //telemetry.addData("SetPoint - Input", )
+        //telemetry.addData("Output - Actual Value", )
 
 
     }
