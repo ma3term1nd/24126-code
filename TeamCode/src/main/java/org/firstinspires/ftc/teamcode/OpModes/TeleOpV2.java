@@ -1,27 +1,16 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.OpModes.MecanumClass;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDriveAuto;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.IntakeForNow;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.ShooterForNow;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
 
 @TeleOp(name = "TeleOpV2")
@@ -30,14 +19,15 @@ public class TeleOpV2 extends OpMode {
     //flywheel variables
     boolean flywheelToggle = false;
     boolean lastFlywheelButtonState = false;
+    boolean lastOutakeButtonState = false;
 
     //kicker variables
     boolean kickerToggle = false;
     boolean lastKickerButtonState = false;
 
     //shooter variables
-    double shooterVelocity = 0;
-    double shooterMaxVelocity = 0;
+    double shooterVelocity = 100;
+    double shooterMaxVelocity = 300;
 
     //intake variables
     int intakePower = 1;
@@ -61,51 +51,84 @@ public class TeleOpV2 extends OpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
-    MecanumClass drive = new MecanumClass();
-
+    MecanumDriveAuto drive;
     public void init(){
 
-    //drive.init(hardwareMap);
     intake = new IntakeForNow(hardwareMap, 1);
-    //shoot = new ShooterForNow(hardwareMap, shooterVelocity, shooterMaxVelocity);
+    shoot = new ShooterForNow(hardwareMap, shooterVelocity, shooterMaxVelocity);
     //shoot.kickerIsFlat();
-
+    drive = new MecanumDriveAuto(hardwareMap, new Pose2d(1,2,5));
 
     }//end of init method
 
     public void loop(){
+        drive.localizer.update();
 
-
+        Pose2d posePosition = drive.localizer.getPose();
+        double x = posePosition.position.x;
+        double y = posePosition.position.y;
         //testingForNow
         //shoot.findMaximumVelocity();
 
         //shoot.shooterOn();
         //shoot.shooterOn();
-
-        if(gamepad2.y){
-            intake.intakeIn();
+        /*
+        boolean currentFlywheelButton = gamepad2.a;
+        if(currentFlywheelButton && !lastFlywheelButtonState){
+            flywheelToggle= !flywheelToggle;
+            if(flywheelToggle){
+                shoot.shooterOn();
+            }
+            else {
+                shoot.shooterOff();
+            }
         }
-        else if(gamepad2.x){
-            intake.intakeOut();
+        lastFlywheelButtonState = currentFlywheelButton;
+
+
+
+        boolean outakeButton = gamepad2.b;
+        if(outakeButton && !lastOutakeButtonState){
+            timer.reset();
+            kickerToggle = !kickerToggle;
+        }
+lastOutakeButtonState = outakeButton;
+        if(kickerToggle) {
+
+            //value has to be greater than last one so kicker can return to flat
+            kickerSequence();
         }
         else {
-            intake.intakeOff();
+
+            shoot.kickerIsFlat();
+
         }
 
+        */
 
-        //dashboard
-       // dashboardTelemetry.addData("input: reference velocity", shoot.referenceVelocity);
-       // dashboardTelemetry.addData("output: current velocity", shoot.currentVelocity);
-
+        dashboardTelemetry.addData("input: reference velocity", shoot.referenceVelocity);
+       dashboardTelemetry.addData("output: current velocity", shoot.currentVelocity);
+        telemetry.addData("button:", kickerToggle);
+        telemetry.addData("x", x);
+        telemetry.addData("y",y);
         //telemetry
-        //telemetry.addData("MaxVelocity", shoot.maximumVelocity);
+
+        telemetry.addData("MaxVelocity", shoot.maximumVelocity);
         dashboardTelemetry.update();
 
 
     } //end of loop
     //Methods
     public void kickerSequence(){
-        if(timer.time() > 0 && timer.time() < 0){ //change 0s
+        if(timer.time() > 0 && timer.time() < 0.2){ //change 0s
+            shoot.kickerIsUp();
+        }
+
+        else if (timer.time()> 0.2 && timer.time() < 0.5){
+            shoot.kickerIsFlat();
+        }
+        /*
+        else if (timer.time()> 0 && timer.time() < 0){
             shoot.kickerIsUp();
         }
         else if (timer.time()> 0 && timer.time() < 0){
@@ -114,15 +137,12 @@ public class TeleOpV2 extends OpMode {
         else if (timer.time()> 0 && timer.time() < 0){
             shoot.kickerIsUp();
         }
-        else if (timer.time()> 0 && timer.time() < 0){
-            shoot.kickerIsFlat();
-        }
-        else if (timer.time()> 0 && timer.time() < 0){
+        */
+        else if (timer.time() > 0.5){
             shoot.kickerIsUp();
+            kickerToggle = false;
         }
-        else if (timer.time() > 0){
-            shoot.kickerIsUp();
-        }
+
     }//end of method
 
 

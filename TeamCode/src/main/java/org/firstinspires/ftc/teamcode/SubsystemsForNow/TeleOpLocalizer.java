@@ -13,4 +13,7 @@ public class TeleOpLocalizer {
 
 
     }
+    public void compareDistanceToZones(double x, double y){
+
+    }
 }

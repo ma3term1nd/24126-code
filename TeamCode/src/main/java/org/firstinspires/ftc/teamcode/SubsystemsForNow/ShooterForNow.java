@@ -21,7 +21,7 @@ public class ShooterForNow {
     Servo kicker;
 
     //kicker Positions
-    double upPosition = 0.075;
+    double upPosition = 0.07;
     double downPosition = -0.05;
 
     //instance variables: shooter

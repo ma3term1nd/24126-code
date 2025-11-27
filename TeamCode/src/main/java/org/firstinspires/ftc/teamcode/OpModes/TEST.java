@@ -1,26 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.OpModes.MecanumClass;
-import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDriveAuto;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.IntakeForNow;
 import org.firstinspires.ftc.teamcode.SubsystemsForNow.ShooterForNow;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 @Disabled
 @TeleOp(name = "TeleOpV2")
 public class TEST extends OpMode {
@@ -157,6 +146,8 @@ public class TEST extends OpMode {
         if(timer.time() > 0 && timer.time() < 0){ //change 0s
             shoot.kickerIsUp();
         }
+
+        /*
         else if (timer.time()> 0 && timer.time() < 0){
             shoot.kickerIsFlat();
         }
@@ -170,81 +161,12 @@ public class TEST extends OpMode {
             shoot.kickerIsUp();
         }
         else if (timer.time() > 0){
-            shoot.kickerIsFlat();
+            shoot.kickerIsUp();
+            kickerToggle = false;
         }
-        else if(timer.time()>0){
-            kickerToggle = false; //end of sequence
-        }
+
+         */
     }//end of method
 
 
 }//end of class
-/*
-switch(state) { //
-        case normalDrive:
-
-        //if you are on normal drive, pressing A returns to roadrunnerDrive
-        if(gamepad1.a){
-state = DriveState.roadRunnerDrive;
-                }
-
-                        //intake - Driver 2
-
-if(gamepad2.y){
-            intake.intakeIn();
-        }
-        else if(gamepad2.x){
-            intake.intakeOut();
-        }
-        else {
-            intake.intakeOff();
-        }
-                        //end of intake
-
-                        break; //end of normalDrive code
-
-                        case roadRunnerDrive:
-
-        //if you are on roadrunner drive, clicking B returns to normal drive
-        if(gamepad1.b){
-state = DriveState.normalDrive;
-                }
-
-                        break; //end of roadRunnerDrive Code
-                        }//end of switch statement
-
-        //flywheel
-
-        boolean currentFlywheelButton = gamepad2.a;
-        if(currentFlywheelButton && !lastFlywheelButtonState){
-            flywheelToggle= !flywheelToggle;
-        }
-        lastFlywheelButtonState = currentFlywheelButton;
-
-        if(flywheelToggle){
-            shoot.shooterOn();
-        }
-        else {
-            shoot.shooterOff();
-        }
-
-
-        //kicker
-        if(gamepad2.b){
-            timer.reset();
-            kickerToggle = !kickerToggle;
-        }
-
-        if(kickerToggle) {
-
-            if(timer.time() < 0) { //value has to be greater than last one so kicker can return to flat
-                kickerSequence();
-            }
-        }
-        else {
-
-            shoot.kickerIsFlat();
-
-        }
-
- */
